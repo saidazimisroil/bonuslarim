@@ -1,0 +1,24 @@
+<%- include('layout', { body: '' }) %>
+<h2>Welcome, <%= login %>!</h2>
+<p>Bonus: <%= bonus %></p>
+<p>Countdown: <span id="timer"></span></p>
+
+<script>
+  function countdown() {
+    let timer = <%= countdown %>;
+    const timerElement = document.getElementById('timer');
+    const interval = setInterval(() => {
+      if (timer <= 0) {
+        clearInterval(interval);
+        location.reload();
+      } else {
+        const hours = Math.floor(timer / 3600000);
+        const minutes = Math.floor((timer % 3600000) / 60000);
+        const seconds = Math.floor((timer % 60000) / 1000);
+        timerElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        timer -= 1000;
+      }
+    }, 1000);
+  }
+  countdown();
+</script>
