@@ -61,11 +61,23 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/home", (req, res) => {
+router.get("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.redirect("/home");
+    }
+    res.clearCookie("connect.sid");
+    res.redirect("/login");
+  });
+});
+
+router.get("/home", async (req, res) => {
   if (!req.session.user) {
     return res.redirect("/login");
   }
-  const user = req.session.user;
+
+  const user = await User.findById(req.session.user._id);
+
   res.render("home", { login: user.login, bonus: user.bonus });
 });
 

@@ -53,7 +53,16 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  res.locals.user = req.session.user;
+  next();
+});
+
 app.use("/", authRoutes);
+
+app.use((req, res) => {
+  res.status(404).render("404", { title: "404 Not Found" });
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

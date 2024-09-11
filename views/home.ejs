@@ -1,7 +1,9 @@
 <%- include('layout', { body: '' }) %>
-<h2>Welcome, <%= login %>!</h2>
-<p>Bonus: <%= bonus %></p>
-<p>Countdown: <span id="timer"></span></p>
+<div class="container">
+  <h2>Xush kelibsiz, <%= login %>!</h2>
+  <p>Bonusingiz: <%= bonus %></p>
+  <p>Qolgan vaqt: <span id="timer"></span></p>
+</div>
 
 <script>
   function countdown() {
