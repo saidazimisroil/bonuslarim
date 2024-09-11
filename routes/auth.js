@@ -16,25 +16,23 @@ router.post("/register", async (req, res) => {
   }
 
   if (errors.length > 0) {
-    res.render("register", { errors });
+    return res.render("register", { errors });
   } else {
     try {
       const existingUser = await User.findOne({ login });
       if (existingUser) {
         errors.push({ msg: "Login already exists" });
-        res.render("register", { errors });
-      } else {
-        const newUser = new User({
-          login,
-          password,
-          bonus: 100,
-        });
-
-        await newUser.save();
-        res.redirect("/login");
+        return res.render("register", { errors });
       }
+
+      const newUser = new User({ login, password, bonus: 100 });
+      await newUser.save();
+      req.session.success_msg = "You are now registered and can log in";
+      return res.redirect("/login");
     } catch (err) {
       console.error(err);
+      errors.push({ msg: "An error occurred during registration" });
+      return res.render("register", { errors });
     }
   }
 });
@@ -48,16 +46,19 @@ router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ login });
     if (!user) {
-      return res.status(400).render("login", { error: "Invalid credentials" });
+      return res.render("login", { error: "Invalid credentials" });
     }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).render("login", { error: "Invalid credentials" });
+      return res.render("login", { error: "Invalid credentials" });
     }
+
     req.session.user = user;
     res.redirect("/home");
   } catch (err) {
     console.error(err);
+    return res.render("login", { error: "An error occurred during login" });
   }
 });
 
